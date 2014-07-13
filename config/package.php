@@ -39,6 +39,7 @@ return [
             'metadata_cache' => 'doctrine.cache.array',
             'query_cache' => 'doctrine.cache.array',
             'result_cache' => 'doctrine.cache.array',
+            'sql_logger' => isset($_ENV['debug']) ? 'doctrine-orm.main.logger' : null,
 
             /*
              * Proxy settings. You should not modify these unless you have a good

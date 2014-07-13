@@ -29,7 +29,7 @@ final class ConfigurationFactory implements ServiceFactory
     public function createService(Injector $i)
     {
         $params = $i['doctrine-orm'][$this->name];
-
+        
         $config = new Configuration();
         $config->setMetadataCacheImpl(InjectorUtils::get($i, $params['metadata_cache']));
         $config->setQueryCacheImpl(InjectorUtils::get($i, $params['query_cache']));
@@ -37,7 +37,11 @@ final class ConfigurationFactory implements ServiceFactory
         $config->setProxyDir($params['proxy_dir']);
         $config->setProxyNamespace($params['proxy_namespace']);
         $config->setAutoGenerateProxyClasses($params['auto_generate_proxy_classes']);
-
+        
+        if (isset($params['sql_logger'])) {
+            $config->setSQLLogger(InjectorUtils::get($i, $params['sql_logger']));
+        }
+        
         return $config;
     }
 }

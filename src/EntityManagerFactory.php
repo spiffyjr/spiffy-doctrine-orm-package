@@ -2,6 +2,8 @@
 
 namespace Spiffy\DoctrineORMPackage;
 
+use Doctrine\DBAL\Logging\EchoSQLLogger;
+use Doctrine\ORM\Cache\RegionsConfiguration;
 use Doctrine\ORM\EntityManager;
 use Spiffy\Inject\Injector;
 use Spiffy\Inject\ServiceFactory;
@@ -44,13 +46,17 @@ final class EntityManagerFactory implements ServiceFactory
         $configFactory = new ConfigurationFactory($this->config);
         $config = $configFactory->createService($i);
 
-        $connectionFactory = new ConnectionFactory($this->connection);
+        $connectionFactory = new ConnectionFactory($this->connection, $config);
         $connection = $connectionFactory->createService($i);
 
         $driverFactory = new DriverFactory($this->driver);
         $driver = $driverFactory->createService($i);
 
+        $factory = new \Doctrine\ORM\Cache\DefaultCacheFactory(new RegionsConfiguration(), $i->nvoke('doctrine.cache.filesystem'));
+        
         $config->setMetadataDriverImpl($driver);
+        $config->setSecondLevelCacheEnabled();
+        $config->getSecondLevelCacheConfiguration()->setCacheFactory($factory);
 
         return EntityManager::create($connection, $config);
     }
