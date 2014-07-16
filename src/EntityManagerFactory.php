@@ -52,11 +52,7 @@ final class EntityManagerFactory implements ServiceFactory
         $driverFactory = new DriverFactory($this->driver);
         $driver = $driverFactory->createService($i);
 
-        $factory = new \Doctrine\ORM\Cache\DefaultCacheFactory(new RegionsConfiguration(), $i->nvoke('doctrine.cache.filesystem'));
-        
         $config->setMetadataDriverImpl($driver);
-        $config->setSecondLevelCacheEnabled();
-        $config->getSecondLevelCacheConfiguration()->setCacheFactory($factory);
 
         return EntityManager::create($connection, $config);
     }
